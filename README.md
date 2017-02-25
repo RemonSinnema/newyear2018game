@@ -13,7 +13,7 @@ This is a simple game for keeping us busy at New Year's Eve 2018.
 
 # Objective
 
-- Keep us occupied for about 4 hours
+- Keep us occupied for about 4 hours (8PM - 11:45PM)
 - Have fun
 
 
@@ -26,16 +26,27 @@ This is a simple game for keeping us busy at New Year's Eve 2018.
 
 # Game play
 
-- To keep it interesting, split the game up into different levels that take about an hour or so each to complete
+
+## Levels
+
+To keep it interesting, split the game up into different levels that take about an hour or so each to complete
 - Investigate whether it's feasible to have group or even individual levels, e.g #1 global level, #2 group level, #3 individual level, #4 global level
-- The final level should be able to shrink/expand as needed to fill the time
+- Each level should be able to shrink/expand as needed to fill the alotted time
+
+Potential levels:
+- city, including a park and a supermarket where you can find groceries you'll need later (e.g. ingredients for oliebollen)
+- maze
+- forest, with lake, beach, cave, mountains
 
 ## Winning
 
-While this game is more about having fun than winning, having some element of competition adds to the fun. Conceivable ways to win:
-- Each player collect credits of some kind; the player with the most credits at the end wins
-- Each player races towards a finish line of some kind; the first player wins
-- Some combination where finishing earlier gets you more credits, but where finishing first doesn't automatically wins
+While this game is more about having fun than winning, having some element of competition adds to the fun.
+So, each player collect New Year's resolutions and the player with the most resolutions at the end wins.
+But a player can also collect other things that can help them:
+- food (oliebollen/appelflappen): over time a player grows hungry and moves slower, unless they eat something
+- firecrackers: ward of enemies or blow up roadblocks
+- fireworks: light the way in the dark
+- special honor: one person can collect this and gets to do something special after the game (e.g. pick the name of the lottery winner)
 
 
 # Delivery mode
