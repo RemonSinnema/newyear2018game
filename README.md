@@ -34,7 +34,7 @@ To keep it interesting, split the game up into different levels that take about 
 - Each level should be able to shrink/expand as needed to fill the alotted time
 
 Potential levels:
-- city, including a park and a supermarket where you can find groceries you'll need later (e.g. ingredients for oliebollen)
+- city, including a park and a supermarket where you can find groceries you'll need later (e.g. ingredients for donuts)
 - maze
 - forest, with lake, beach, cave, mountains
 
@@ -43,7 +43,7 @@ Potential levels:
 While this game is more about having fun than winning, having some element of competition adds to the fun.
 So, each player collect New Year's resolutions and the player with the most resolutions at the end wins.
 But a player can also collect other things that can help them:
-- food (oliebollen/appelflappen): over time a player grows hungry and moves slower, unless they eat something
+- food (donut/apple fritter): over time a player grows hungry and moves slower, unless they eat something
 - firecrackers: ward of enemies or blow up roadblocks
 - fireworks: light the way in the dark
 - special honor: one person can collect this and gets to do something special after the game (e.g. pick the name of the lottery winner)
