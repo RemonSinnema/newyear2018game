@@ -30,7 +30,11 @@ This is a simple game for keeping us busy at New Year's Eve 2018.
 ## Levels
 
 To keep it interesting, split the game up into different levels that take about an hour or so each to complete
-- Investigate whether it's feasible to have group or even individual levels, e.g #1 global level, #2 group level, #3 individual level, #4 global level
+- Investigate whether it's feasible to have group or even individual levels, e.g
+    - global level
+    - group level
+    - individual level
+    - global level
 - Each level should be able to shrink/expand as needed to fill the alotted time
 
 Potential levels:
@@ -41,12 +45,13 @@ Potential levels:
 ## Winning
 
 While this game is more about having fun than winning, having some element of competition adds to the fun.
-So, each player collect New Year's resolutions and the player with the most resolutions at the end wins.
+So, each player collects New Year's resolutions and the player with the most resolutions at the end wins.
 But a player can also collect other things that can help them:
 - food (donut/apple fritter): over time a player grows hungry and moves slower, unless they eat something
 - firecrackers: ward of enemies or blow up roadblocks
 - fireworks: light the way in the dark
-- special honor: one person can collect this and gets to do something special after the game (e.g. pick the name of the lottery winner)
+- special honor: one person can collect this and gets to do something special after the game
+  (e.g. pick the name of the lottery winner)
 
 
 # Delivery mode
@@ -54,9 +59,9 @@ But a player can also collect other things that can help them:
 - Play on big screen TV (using Google cast)
 - Control using tablet or mobile phone
 - Table remains available for drinks & food
+- Server must be on same network
 
 
 # Post-Game
 
-- After the game is over, create a short video/animated gif for each of the players' journeys through the game
-
+- After the game is over, create a short video of the game and share it with the players so they can remember
