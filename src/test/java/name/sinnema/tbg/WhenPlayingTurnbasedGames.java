@@ -20,14 +20,14 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 
-public class WhenGameIsPlayed {
+public class WhenPlayingTurnbasedGames {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
-  private final Game game = new Game();
+  private final TurnbasedGame game = new TurnbasedGame();
 
   @Test
-  public void shouldContainMultiplePlayers() {
+  public void shouldAllowMultiplePlayers() {
     Player player1 = new Player("yiri");
     Player player2 = new Player("armin");
     game.add(player1);
@@ -41,7 +41,25 @@ public class WhenGameIsPlayed {
   }
 
   @Test
-  public void shouldContainMultipleLevels() {
+  public void shouldRequireAtLeastOnePlayer() {
+    game.add(mock(Level.class));
+
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("Missing player(s)");
+    game.start();
+  }
+
+  @Test
+  public void shouldRequireAtLeastOneLevel() {
+    game.add(new Player("laurie"));
+
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("Missing level(s)");
+    game.start();
+  }
+
+  @Test
+  public void shouldAllowMultipleLevels() {
     Level level1 = mock(Level.class);
     Level level2 = mock(Level.class);
     game.add(level1);
@@ -111,6 +129,29 @@ public class WhenGameIsPlayed {
   }
 
   @Test
+  public void shouldUpdateWorldWhenPlayersMove() {
+    Level level = mock(Level.class);
+    World world1 = mock(World.class);
+    World world2 = mock(World.class);
+    final AtomicReference<World> currentWorld = new AtomicReference<>(world1);
+    when(level.getWorld()).thenAnswer(invocation -> currentWorld.get());
+    Move move = mock(Move.class);
+    when(level.getMovesFor(any(Player.class))).thenReturn(Arrays.asList(move));
+    doAnswer(invocation -> {
+      currentWorld.set(world2);
+      return null;
+    }).when(level).move(any(Player.class), eq(move));
+    game.add(level);
+    game.add(new Player("laurie"));
+
+    game.start();
+    assertSame("Initial world", world1, game.getCurrentWorld());
+
+    game.move(move);
+    assertSame("Updated world", world2, game.getCurrentWorld());
+  }
+
+  @Test
   public void shouldMoveToNextLevelWhenLevelIsComplete() {
     Level level1 = mock(Level.class);
     Level level2 = mock(Level.class);
@@ -119,11 +160,11 @@ public class WhenGameIsPlayed {
     game.add(new Player("laurie"));
 
     game.start();
-    assertSame("Level #1", level1, game.getCurrentLevel());
+    assertSame("Level #1", 1, game.getCurrentLevel());
 
     when(level1.isComplete()).thenReturn(true);
     game.nextTurn();
-    assertSame("Level #2", level2, game.getCurrentLevel());
+    assertSame("Level #2", 2, game.getCurrentLevel());
   }
 
   @Test
@@ -141,29 +182,6 @@ public class WhenGameIsPlayed {
 
     thrown.expect(UnsupportedOperationException.class);
     game.nextTurn();
-  }
-
-  @Test
-  public void shouldUpdateWorldWhenPlayersMove() {
-    Level level = mock(Level.class);
-    World world1 = mock(World.class);
-    World world2 = mock(World.class);
-    final AtomicReference<World> currentWorld = new AtomicReference<>(world1);
-    when(level.getWorld()).thenAnswer(invocation -> currentWorld.get());
-    Move move = mock(Move.class);
-    when(level.getMovesFor(any(Player.class))).thenReturn(Arrays.asList(move));
-    doAnswer(invocation -> {
-      currentWorld.set(world2);
-      return null;
-    }).when(level).move(any(Player.class), eq(move));
-    game.add(level);
-    game.add(new Player("laurie"));
-
-    game.start();
-    assertSame("Initial world", world1, game.getWorld());
-
-    game.move(move);
-    assertSame("Updated world", world2, game.getWorld());
   }
 
 }

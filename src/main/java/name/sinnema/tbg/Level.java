@@ -1,13 +1,13 @@
 package name.sinnema.tbg;
 
-import java.util.Collection;
+import java.util.List;
 
 
 public interface Level {
 
   World getWorld();
 
-  Collection<Move> getMovesFor(Player player);
+  List<Move> getMovesFor(Player player);
 
   void move(Player player, Move move);
 

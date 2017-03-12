@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class Game {
+public class TurnbasedGame {
 
   private final Random random = new SecureRandom();
   private final List<Player> players = new ArrayList<>();
@@ -33,6 +33,12 @@ public class Game {
   }
 
   public void start() {
+    if (players.isEmpty()) {
+      throw new IllegalStateException("Missing player(s)");
+    }
+    if (levels.isEmpty()) {
+      throw new IllegalStateException("Missing level(s)");
+    }
     currentPlayerIndex = random.nextInt(players.size());
     currentLevelIndex = 0;
   }
@@ -45,29 +51,37 @@ public class Game {
     if (isOver()) {
       throw new UnsupportedOperationException();
     }
-    if (getCurrentLevel().isComplete()) {
+    if (currentLevel().isComplete()) {
       currentLevelIndex++;
     }
     currentPlayerIndex = ++currentPlayerIndex % players.size();
+  }
+
+  private Level currentLevel() {
+    return levels.get(currentLevelIndex);
   }
 
   public boolean isOver() {
     return currentLevelIndex >= levels.size();
   }
 
-  public Level getCurrentLevel() {
-    return levels.get(currentLevelIndex);
+  public int getCurrentLevel() {
+    return currentLevelIndex + 1; // Report 1-based level for human consumption
   }
 
   public void move(Move move) {
-    if (!getCurrentLevel().getMovesFor(getCurrentPlayer()).contains(move)) {
+    if (!currentLevel().getMovesFor(getCurrentPlayer()).contains(move)) {
       throw new IllegalArgumentException("Illegal move: " + move);
     }
-    getCurrentLevel().move(getCurrentPlayer(), move);
+    currentLevel().move(getCurrentPlayer(), move);
   }
 
-  public World getWorld() {
-    return getCurrentLevel().getWorld();
+  public World getCurrentWorld() {
+    return currentLevel().getWorld();
+  }
+
+  public List<Move> getCurrentMoves() {
+    return currentLevel().getMovesFor(getCurrentPlayer());
   }
 
 }
