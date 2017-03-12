@@ -25,14 +25,14 @@ public class TicTacToe extends TurnbasedGame {
   }
 
   @Override
-  public void nextTurn() {
+  public void endTurn() {
     throw new UnsupportedOperationException();
   }
 
   @Override
   public void move(Move move) {
     super.move(move);
-    super.nextTurn();
+    super.endTurn();
   }
 
 }

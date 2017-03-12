@@ -88,7 +88,7 @@ public class WhenPlayingTicTacToe {
     assertNotSame("Current player", player, game.getCurrentPlayer());
 
     thrown.expect(UnsupportedOperationException.class);
-    game.nextTurn();
+    game.endTurn();
   }
 
   @Test

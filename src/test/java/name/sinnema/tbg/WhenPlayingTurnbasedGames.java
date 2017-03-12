@@ -89,7 +89,7 @@ public class WhenPlayingTurnbasedGames {
   }
 
   private Player assertNextPlayer(String message, Player currentPlayer, Player player1, Player player2) {
-    game.nextTurn();
+    game.endTurn();
     Player expected = player1 == currentPlayer ? player2 : player1;
     Player actual = game.getCurrentPlayer();
     assertSame(message, expected, actual);
@@ -163,7 +163,7 @@ public class WhenPlayingTurnbasedGames {
     assertSame("Level #1", 1, game.getCurrentLevel());
 
     when(level1.isComplete()).thenReturn(true);
-    game.nextTurn();
+    game.endTurn();
     assertSame("Level #2", 2, game.getCurrentLevel());
   }
 
@@ -177,11 +177,11 @@ public class WhenPlayingTurnbasedGames {
     assertFalse("At start", game.isOver());
 
     when(level.isComplete()).thenReturn(true);
-    game.nextTurn();
+    game.endTurn();
     assertTrue("After completing last level", game.isOver());
 
     thrown.expect(UnsupportedOperationException.class);
-    game.nextTurn();
+    game.endTurn();
   }
 
 }
