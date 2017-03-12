@@ -7,13 +7,12 @@ import name.sinnema.game.engine.Level;
 import name.sinnema.game.engine.Move;
 import name.sinnema.game.engine.Player;
 import name.sinnema.game.engine.World;
-import name.sinnema.game.tictactoe.TicTacToeWorld.Marker;
 
 
 class TicTacToeLevel implements Level {
 
   private final TicTacToeWorld world = new TicTacToeWorld();
-  private Player crossPlayer;
+  private Player firstPlayer;
 
   @Override
   public World getWorld() {
@@ -22,28 +21,29 @@ class TicTacToeLevel implements Level {
 
   @Override
   public List<Move> getMovesFor(Player player) {
-    Marker marker = markerFor(player);
-    return world.emptyCells()
-        .map(index -> new PlaceMarker(index, marker))
+    Mark mark = markFor(player);
+    return world.emptyCellIndexes()
+        .map(index -> new PlaceMark(index, mark))
         .collect(Collectors.toList());
+  }
+
+  private Mark markFor(Player player) {
+    if (firstPlayer == null) {
+      firstPlayer = player;
+    }
+    return player == firstPlayer ? Mark.CROSS : Mark.NOUGHT;
   }
 
   @Override
   public void move(Player player, Move move) {
-    PlaceMarker placeMarker = (PlaceMarker)move;
-    world.set(placeMarker.getIndex(), placeMarker.getMarker());
-  }
-
-  private Marker markerFor(Player player) {
-    if (crossPlayer == null) {
-      crossPlayer = player;
-    }
-    return player == crossPlayer ? Marker.CROSS : Marker.NOUGHT;
+    PlaceMark placeMark = (PlaceMark)move;
+    world.set(placeMark.getIndex(), placeMark.getMark());
   }
 
   @Override
   public boolean isComplete() {
-    return world.hasCompletelyMarkedLine();
+    return !world.emptyCellIndexes().findAny().isPresent()
+        || world.hasRowWhereAllCellsAreMarkedTheSame();
   }
 
 }

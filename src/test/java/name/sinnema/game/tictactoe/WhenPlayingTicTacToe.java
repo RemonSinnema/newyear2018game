@@ -20,11 +20,6 @@ import name.sinnema.game.engine.Move;
 import name.sinnema.game.engine.Player;
 import name.sinnema.game.engine.TurnbasedGame;
 import name.sinnema.game.engine.World;
-import name.sinnema.game.tictactoe.PlaceMarker;
-import name.sinnema.game.tictactoe.TicTacToe;
-import name.sinnema.game.tictactoe.TicTacToeLevel;
-import name.sinnema.game.tictactoe.TicTacToeWorld;
-import name.sinnema.game.tictactoe.TicTacToeWorld.Marker;
 
 
 public class WhenPlayingTicTacToe {
@@ -71,8 +66,8 @@ public class WhenPlayingTicTacToe {
     assertEquals("# moves", 9, moves.size());
     Collection<Integer> freeCellIndexes = new HashSet<>();
     moves.forEach(move -> {
-      assertEquals("Move", PlaceMarker.class, move.getClass());
-      PlaceMarker placeMarker = (PlaceMarker)move;
+      assertEquals("Move", PlaceMark.class, move.getClass());
+      PlaceMark placeMarker = (PlaceMark)move;
       assertTrue(freeCellIndexes.add(placeMarker.getIndex()));
     });
     assertEquals("# free cells", 9, freeCellIndexes.size());
@@ -102,31 +97,53 @@ public class WhenPlayingTicTacToe {
     Move move = game.getCurrentMoves().get(0);
     assertEquals("Move #1", "Place X at 0", move.toString());
     game.move(move);
-    assertMarker(Marker.CROSS, 0);
+    assertMarker(Mark.CROSS, 0);
 
     move = game.getCurrentMoves().get(0);
     assertEquals("Move #2", "Place O at 1", move.toString());
     game.move(move);
-    assertMarker(Marker.NOUGHT, 1);
+    assertMarker(Mark.NOUGHT, 1);
 
     game.move(game.getCurrentMoves().get(0));
-    assertMarker(Marker.CROSS, 2);
+    assertMarker(Mark.CROSS, 2);
   }
 
-  private void assertMarker(Marker expected, int position) {
+  private void assertMarker(Mark expected, int position) {
     assertEquals("Marker at " + position, expected, ((TicTacToeWorld)game.getCurrentWorld()).get(position));
   }
 
   @Test
-  public void shouldEndGameWhenThreeInARow() {
+  public void shouldEndGameWhenPlayerMarksLine() {
     game.start();
 
-    game.move(game.getCurrentMoves().get(4));
-    game.move(game.getCurrentMoves().get(0));
-    game.move(game.getCurrentMoves().get(0));
-    game.move(game.getCurrentMoves().get(0));
-    game.move(game.getCurrentMoves().get(3));
+    executeMove(4);
+    executeMove(0);
+    executeMove(0);
+    executeMove(0);
+    executeMove(3);
 
+    assertTrue("Game should be over", game.isOver());
+  }
+
+  private void executeMove(int moveIndex) {
+    game.move(game.getCurrentMoves().get(moveIndex));
+  }
+
+  @Test
+  public void shouldEndGameWhenNoMoreMoves() {
+    game.start();
+
+    executeMove(4);
+    executeMove(0);
+    executeMove(0);
+    executeMove(4);
+    executeMove(1);
+    executeMove(1);
+    executeMove(2);
+    executeMove(0);
+    executeMove(0);
+
+    assertTrue("There should be no more moves", game.getCurrentMoves().isEmpty());
     assertTrue("Game should be over", game.isOver());
   }
 

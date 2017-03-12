@@ -11,43 +11,25 @@ import name.sinnema.game.engine.World;
 
 public class TicTacToeWorld implements World {
 
-  public enum Marker {
-
-    EMPTY(" "), CROSS("X"), NOUGHT("O");
-
-    private final String text;
-
-    Marker(String text) {
-      this.text = text;
-    }
-
-    @Override
-    public String toString() {
-      return text;
-    }
-
-  }
-
-
-  private final List<Marker> markers = new ArrayList<>();
-  private final Collection<Collection<Integer>> lines = new ArrayList<>();
+  private final List<Mark> cells = new ArrayList<>();
+  private final Collection<Collection<Integer>> rows = new ArrayList<>();
 
   public TicTacToeWorld() {
     this(3);
   }
 
   public TicTacToeWorld(int size) {
-    initMarkers(size);
-    initLines(size);
+    initCells(size);
+    initRows(size);
   }
 
-  private void initMarkers(int size) {
-    Stream.generate(() -> Marker.EMPTY)
+  private void initCells(int size) {
+    Stream.generate(() -> Mark.NONE)
         .limit(size * size)
-        .forEach(m -> markers.add(m));
+        .forEach(m -> cells.add(m));
   }
 
-  private void initLines(int size) {
+  private void initRows(int size) {
     addRows(size);
     addColumns(size);
     addTopLeftDiagonal(size);
@@ -55,72 +37,71 @@ public class TicTacToeWorld implements World {
   }
 
   private void addRows(int size) {
-    for (int row = 0; row < size; row++) {
-      Collection<Integer> line = new ArrayList<>();
-      for (int i = 0; i < size; i++) {
-        line.add(row * size + i);
+    for (int rowIndex = 0; rowIndex < size; rowIndex++) {
+      Collection<Integer> row = new ArrayList<>();
+      for (int columnIndex = 0; columnIndex < size; columnIndex++) {
+        row.add(rowIndex * size + columnIndex);
       }
-      lines.add(line);
+      rows.add(row);
     }
   }
 
   private void addColumns(int size) {
-    for (int column = 0; column < size; column++) {
-      Collection<Integer> line = new ArrayList<>();
-      for (int i = 0; i < size; i++) {
-        line.add(column + size * i);
+    for (int columnIndex = 0; columnIndex < size; columnIndex++) {
+      Collection<Integer> row = new ArrayList<>();
+      for (int rowIndex = 0; rowIndex < size; rowIndex++) {
+        row.add(columnIndex + size * rowIndex);
       }
-      lines.add(line);
+      rows.add(row);
     }
   }
 
   private void addTopLeftDiagonal(int size) {
-    Collection<Integer> line = new ArrayList<>();
+    Collection<Integer> row = new ArrayList<>();
     int index = 0;
-    for (int i = 0; i < size; i++) {
-      line.add(index);
+    for (int rowIndex = 0; rowIndex < size; rowIndex++) {
+      row.add(index);
       index += size + 1;
     }
-    lines.add(line);
+    rows.add(row);
   }
 
   private void addTopRightDiagonal(int size) {
-    Collection<Integer> line = new ArrayList<>();
+    Collection<Integer> row = new ArrayList<>();
     int index = size - 1;
-    for (int i = 0; i < size; i++) {
-      line.add(index);
+    for (int rowIndex = 0; rowIndex < size; rowIndex++) {
+      row.add(index);
       index += size - 1;
     }
-    lines.add(line);
+    rows.add(row);
   }
 
-  public Marker get(int index) {
-    return markers.get(index);
+  public Mark get(int index) {
+    return cells.get(index);
   }
 
-  public void set(int index, Marker marker) {
-    markers.set(index, marker);
+  public void set(int index, Mark marker) {
+    cells.set(index, marker);
   }
 
-  public Stream<Integer> emptyCells() {
+  public Stream<Integer> emptyCellIndexes() {
     Collection<Integer> result = new ArrayList<>();
-    for (int i = 0; i < markers.size(); i++) {
-      if (markers.get(i) == Marker.EMPTY) {
+    for (int i = 0; i < cells.size(); i++) {
+      if (cells.get(i) == Mark.NONE) {
         result.add(i);
       }
     }
     return result.stream();
   }
 
-  public boolean hasCompletelyMarkedLine() {
-    return lines.stream()
-        .anyMatch(line -> isLineMarked(line));
+  public boolean hasRowWhereAllCellsAreMarkedTheSame() {
+    return rows.stream().anyMatch(row -> areRowCellsMarkedTheSame(row));
   }
 
-  private boolean isLineMarked(Collection<Integer> line) {
-    Iterator<Integer> indexes = line.iterator();
-    Marker first = get(indexes.next());
-    if (first == Marker.EMPTY) {
+  private boolean areRowCellsMarkedTheSame(Collection<Integer> row) {
+    Iterator<Integer> indexes = row.iterator();
+    Mark first = get(indexes.next());
+    if (first == Mark.NONE) {
       return false;
     }
     while (indexes.hasNext()) {

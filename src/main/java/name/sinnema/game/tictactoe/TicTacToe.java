@@ -1,12 +1,11 @@
 package name.sinnema.game.tictactoe;
 
 import name.sinnema.game.engine.Level;
-import name.sinnema.game.engine.Move;
 import name.sinnema.game.engine.Player;
-import name.sinnema.game.engine.TurnbasedGame;
+import name.sinnema.game.engine.SingleMovePerTurnGame;
 
 
-public class TicTacToe extends TurnbasedGame {
+public class TicTacToe extends SingleMovePerTurnGame {
 
   public TicTacToe(String player1, String player2) {
     super.add(new Player(player1));
@@ -22,17 +21,6 @@ public class TicTacToe extends TurnbasedGame {
   @Override
   public void add(Level level) {
     throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void endTurn() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void move(Move move) {
-    super.move(move);
-    super.endTurn();
   }
 
 }

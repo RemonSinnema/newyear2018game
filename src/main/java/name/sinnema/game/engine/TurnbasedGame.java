@@ -130,7 +130,7 @@ public class TurnbasedGame {
    * @return The legal moves for the current player
    */
   public List<Move> getCurrentMoves() {
-    return currentLevel().getMovesFor(getCurrentPlayer());
+    return isOver() ? Collections.emptyList() : currentLevel().getMovesFor(getCurrentPlayer());
   }
 
 }
