@@ -1,13 +1,13 @@
-package name.sinnema.tbg.tictactoe;
+package name.sinnema.game.tictactoe;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import name.sinnema.tbg.Level;
-import name.sinnema.tbg.Move;
-import name.sinnema.tbg.Player;
-import name.sinnema.tbg.World;
-import name.sinnema.tbg.tictactoe.TicTacToeWorld.Marker;
+import name.sinnema.game.engine.Level;
+import name.sinnema.game.engine.Move;
+import name.sinnema.game.engine.Player;
+import name.sinnema.game.engine.World;
+import name.sinnema.game.tictactoe.TicTacToeWorld.Marker;
 
 
 class TicTacToeLevel implements Level {

@@ -1,9 +1,9 @@
-package name.sinnema.tbg.tictactoe;
+package name.sinnema.game.tictactoe;
 
-import name.sinnema.tbg.Level;
-import name.sinnema.tbg.Move;
-import name.sinnema.tbg.Player;
-import name.sinnema.tbg.TurnbasedGame;
+import name.sinnema.game.engine.Level;
+import name.sinnema.game.engine.Move;
+import name.sinnema.game.engine.Player;
+import name.sinnema.game.engine.TurnbasedGame;
 
 
 public class TicTacToe extends TurnbasedGame {

@@ -1,4 +1,4 @@
-package name.sinnema.tbg.tictactoe;
+package name.sinnema.game.tictactoe;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
-import name.sinnema.tbg.World;
+import name.sinnema.game.engine.World;
 
 
 public class TicTacToeWorld implements World {

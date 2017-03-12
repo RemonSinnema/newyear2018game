@@ -1,4 +1,4 @@
-package name.sinnema.tbg;
+package name.sinnema.game.engine;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,6 +18,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import name.sinnema.game.engine.Level;
+import name.sinnema.game.engine.Move;
+import name.sinnema.game.engine.Player;
+import name.sinnema.game.engine.TurnbasedGame;
+import name.sinnema.game.engine.World;
 
 
 public class WhenPlayingTurnbasedGames {

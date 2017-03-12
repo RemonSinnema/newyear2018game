@@ -1,4 +1,4 @@
-package name.sinnema.tbg.tictactoe;
+package name.sinnema.game.tictactoe;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -15,12 +15,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import name.sinnema.tbg.Level;
-import name.sinnema.tbg.Move;
-import name.sinnema.tbg.Player;
-import name.sinnema.tbg.TurnbasedGame;
-import name.sinnema.tbg.World;
-import name.sinnema.tbg.tictactoe.TicTacToeWorld.Marker;
+import name.sinnema.game.engine.Level;
+import name.sinnema.game.engine.Move;
+import name.sinnema.game.engine.Player;
+import name.sinnema.game.engine.TurnbasedGame;
+import name.sinnema.game.engine.World;
+import name.sinnema.game.tictactoe.PlaceMarker;
+import name.sinnema.game.tictactoe.TicTacToe;
+import name.sinnema.game.tictactoe.TicTacToeLevel;
+import name.sinnema.game.tictactoe.TicTacToeWorld;
+import name.sinnema.game.tictactoe.TicTacToeWorld.Marker;
 
 
 public class WhenPlayingTicTacToe {

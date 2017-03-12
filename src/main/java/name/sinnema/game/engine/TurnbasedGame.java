@@ -1,4 +1,4 @@
-package name.sinnema.tbg;
+package name.sinnema.game.engine;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
