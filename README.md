@@ -31,10 +31,10 @@ This is a simple game for keeping us busy at New Year's Eve 2018.
 
 To keep it interesting, split the game up into different levels that take about an hour or so each to complete
 - Investigate whether it's feasible to have group or even individual levels, e.g
-    - global level
-    - group level
-    - individual level
-    - global level
+    1. global level
+    1. group level
+    1. individual level
+    1. global level
 - Each level should be able to shrink/expand as needed to fill the alotted time
 
 Potential levels:
