@@ -1,0 +1,9 @@
+= New Year Game API
+
+The Game Server hosts a REST API. Start at the _billboard URL_ `/`:
+include::{snippets}/index/1/http-request.adoc[]
+include::{snippets}/index/1/http-response.adoc[]
+
+Follow the `games` link relation:
+include::{snippets}/index/2/http-request.adoc[]
+include::{snippets}/index/2/http-response.adoc[]
