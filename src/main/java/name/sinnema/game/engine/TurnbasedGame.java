@@ -133,4 +133,8 @@ public class TurnbasedGame {
     return isOver() ? Collections.emptyList() : currentLevel().getMovesFor(getCurrentPlayer());
   }
 
+  public Player getWinningPlayer() {
+    return isOver() ? getCurrentPlayer() : null;
+  }
+
 }

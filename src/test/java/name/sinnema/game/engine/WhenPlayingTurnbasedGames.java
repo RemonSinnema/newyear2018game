@@ -12,18 +12,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import name.sinnema.game.engine.Level;
-import name.sinnema.game.engine.Move;
-import name.sinnema.game.engine.Player;
-import name.sinnema.game.engine.TurnbasedGame;
-import name.sinnema.game.engine.World;
 
 
 public class WhenPlayingTurnbasedGames {
@@ -177,7 +172,8 @@ public class WhenPlayingTurnbasedGames {
   public void shouldEndGameWhenLastLevelIsComplete() {
     Level level = mock(Level.class);
     game.add(level);
-    game.add(new Player("ray"));
+    game.add(new Player("armin"));
+    game.add(new Player("yiri"));
     game.start();
 
     assertFalse("At start", game.isOver());
@@ -185,6 +181,8 @@ public class WhenPlayingTurnbasedGames {
     when(level.isComplete()).thenReturn(true);
     game.endTurn();
     assertTrue("After completing last level", game.isOver());
+    assertSame("Winning player", game.getCurrentPlayer(), game.getWinningPlayer());
+    assertEquals("Moves after game is over", Collections.emptyList(), game.getCurrentMoves());
 
     thrown.expect(UnsupportedOperationException.class);
     game.endTurn();
