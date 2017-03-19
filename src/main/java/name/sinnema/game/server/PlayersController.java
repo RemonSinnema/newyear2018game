@@ -1,5 +1,6 @@
 package name.sinnema.game.server;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 
 import java.net.URI;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -32,9 +34,17 @@ public class PlayersController {
 
   @RequestMapping(method = RequestMethod.GET)
   public Resources<Resource<PlayerDto>> getPlayers() {
-    return Resources.wrap(game.getPlayers().stream()
-        .map(player -> playerToDto(player))
-        .collect(Collectors.toList()));
+    return new Resources<>(
+        game.getPlayers().stream()
+            .map(player -> getPlayerResource(player))
+            .collect(Collectors.toList()),
+        linkTo(PlayersController.class).withSelfRel());
+  }
+
+  private Resource<PlayerDto> getPlayerResource(Player player) {
+    Resource<PlayerDto> result = new Resource<>(playerToDto(player));
+    result.add(new Link(getPlayerUri(player).toString(), Link.REL_SELF));
+    return result;
   }
 
   private PlayerDto playerToDto(Player player) {
@@ -43,17 +53,20 @@ public class PlayersController {
     return result;
   }
 
-  @RequestMapping(method = RequestMethod.POST, consumes = MediaTypes.HAL_JSON_VALUE)
-  public ResponseEntity<PlayerDto> addPlayer(@RequestBody PlayerDto dto, UriComponentsBuilder uriBuilder) {
-    Player player = dtoToPlayer(dto);
-    int index = game.add(player);
-    URI location = MvcUriComponentsBuilder.relativeTo(uriBuilder)
-        .withMethodCall(on(PlayersController.class).getPlayer(index))
+  private URI getPlayerUri(Player player) {
+    return MvcUriComponentsBuilder
+        .fromMethodCall(on(PlayersController.class).getPlayer(game.getPlayers().indexOf(player)))
         .build()
         .encode()
         .toUri();
-    return ResponseEntity.created(location)
-        .body(playerToDto(player));
+  }
+
+  @RequestMapping(method = RequestMethod.POST, consumes = MediaTypes.HAL_JSON_VALUE)
+  public ResponseEntity<Resource<PlayerDto>> addPlayer(@RequestBody PlayerDto dto, UriComponentsBuilder uriBuilder) {
+    Player player = dtoToPlayer(dto);
+    game.add(player);
+    return ResponseEntity.created(getPlayerUri(player))
+        .body(getPlayerResource(player));
   }
 
   private Player dtoToPlayer(PlayerDto dto) {
@@ -61,12 +74,12 @@ public class PlayersController {
   }
 
   @RequestMapping(path = "/{index}", method = RequestMethod.GET)
-  public Resource<Player> getPlayer(@PathVariable("index") int index) {
+  public Resource<PlayerDto> getPlayer(@PathVariable("index") int index) {
     List<Player> players = game.getPlayers();
     if (0 > index || index >= players.size()) {
       throw new ResourceNotFoundException();
     }
-    return new Resource<>(players.get(index));
+    return getPlayerResource(players.get(index));
   }
 
 }

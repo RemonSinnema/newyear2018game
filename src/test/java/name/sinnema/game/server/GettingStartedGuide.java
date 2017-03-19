@@ -2,7 +2,7 @@ package name.sinnema.game.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.relaxedLinks;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -72,7 +72,7 @@ public class GettingStartedGuide {
         get("/"))
         .andExpect(status().isOk())
         .andDo(gettingStartedGuide.document(
-            links(
+            relaxedLinks(
                 linkWithRel(LinkRelations.PLAYERS).description("The <<resources-players,Players resource>>"))))
         .andReturn();
     String playersUri = getLinkUri(state, LinkRelations.PLAYERS);
@@ -92,15 +92,18 @@ public class GettingStartedGuide {
     state = client.perform(get(playerUri))
         .andExpect(status().isOk())
         .andReturn();
-    player = mapper.readValue(state.getResponse().getContentAsByteArray(), PlayerDto.class);
-    assertEquals("Player name", "armin", player.getName());
+    assertEquals("Player name", "armin", getResponseField(state, "name"));
     client.perform(
         get(playersUri))
         .andExpect(status().isOk());
   }
 
   private String getLinkUri(MvcResult state, String rel) throws UnsupportedEncodingException {
-    return JsonPath.parse(state.getResponse().getContentAsString()).read("_links." + rel + ".href");
+    return getResponseField(state, "_links." + rel + ".href");
+  }
+
+  private String getResponseField(MvcResult state, String jsonPath) throws UnsupportedEncodingException {
+    return JsonPath.parse(state.getResponse().getContentAsString()).read(jsonPath);
   }
 
   private String getCreatedUri(MvcResult state) {
