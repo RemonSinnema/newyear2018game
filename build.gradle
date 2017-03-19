@@ -25,7 +25,8 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-data-jpa',
 	   'org.springframework.boot:spring-boot-starter-mobile',
      'org.springframework.boot:spring-boot-starter-web',
-     'org.springframework.boot:spring-boot-starter-hateoas'
+     'org.springframework.boot:spring-boot-starter-hateoas',
+     'org.atteo:evo-inflector:1.2.2'
 	runtime 'com.h2database:h2'
 	testCompile 'org.springframework.boot:spring-boot-starter-test', 
 	   'org.springframework.restdocs:spring-restdocs-mockmvc:1.1.2.RELEASE'

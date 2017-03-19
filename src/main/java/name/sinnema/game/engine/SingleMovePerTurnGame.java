@@ -6,6 +6,10 @@ package name.sinnema.game.engine;
  */
 public class SingleMovePerTurnGame extends TurnbasedGame {
 
+  public SingleMovePerTurnGame(int minPlayers, int maxPlayers) {
+    super(minPlayers, maxPlayers);
+  }
+
   @Override
   public void move(Move move) {
     super.move(move);

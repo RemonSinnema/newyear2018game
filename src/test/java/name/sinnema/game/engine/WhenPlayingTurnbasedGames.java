@@ -45,8 +45,8 @@ public class WhenPlayingTurnbasedGames {
   public void shouldRequireAtLeastOnePlayer() {
     game.add(mock(Level.class));
 
+    assertFalse("Can start game", game.canStart());
     thrown.expect(IllegalStateException.class);
-    thrown.expectMessage("Missing player(s)");
     game.start();
   }
 
@@ -54,8 +54,8 @@ public class WhenPlayingTurnbasedGames {
   public void shouldRequireAtLeastOneLevel() {
     game.add(new Player("laurie"));
 
+    assertFalse("Can start game", game.canStart());
     thrown.expect(IllegalStateException.class);
-    thrown.expectMessage("Missing level(s)");
     game.start();
   }
 

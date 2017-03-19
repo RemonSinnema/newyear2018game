@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.atteo.evo.inflector.English;
+
 
 /**
  * A game where players take turns making one or move moves.
@@ -15,8 +17,19 @@ public class TurnbasedGame {
   private final Random random = new SecureRandom();
   private final List<Player> players = new ArrayList<>();
   private final List<Level> levels = new ArrayList<>();
+  private final int minPlayers;
+  private final int maxPlayers;
   private int currentPlayerIndex;
-  private int currentLevelIndex;
+  private int currentLevelIndex = -1;
+
+  public TurnbasedGame() {
+    this(1, Integer.MAX_VALUE);
+  }
+
+  public TurnbasedGame(int minPlayers, int maxPlayers) {
+    this.minPlayers = minPlayers;
+    this.maxPlayers = maxPlayers;
+  }
 
   /**
    * Add a player.
@@ -24,6 +37,10 @@ public class TurnbasedGame {
    * @return
    */
   public int add(Player player) {
+    if (getPlayers().size() >= maxPlayers) {
+      throw new UnsupportedOperationException(String.format("Cannot play this game with more than %d %s",
+          maxPlayers, English.plural("player", maxPlayers)));
+    }
     players.add(player);
     players.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
     return players.indexOf(player);
@@ -57,14 +74,33 @@ public class TurnbasedGame {
    * Begin playing the game. A game requires at least one player and one level.
    */
   public void start() {
-    if (players.isEmpty()) {
-      throw new IllegalStateException("Missing player(s)");
-    }
-    if (levels.isEmpty()) {
-      throw new IllegalStateException("Missing level(s)");
+    if (!canStart()) {
+      throw new IllegalStateException("Cannot start game");
     }
     currentPlayerIndex = random.nextInt(players.size());
     currentLevelIndex = 0;
+  }
+
+  /**
+   * Returns whether the game is set up and ready to start.
+   * @return Whether the game is set up and ready to start
+   */
+  public boolean canStart() {
+    if (levels.isEmpty()) {
+      return false;
+    }
+    if (players.size() < minPlayers) {
+      return false;
+    }
+    return !isStarted();
+  }
+
+  /**
+   * Returns whether the game has started.
+   * @return Whether the game has started
+   */
+  public boolean isStarted() {
+    return currentLevelIndex >= 0;
   }
 
   /**

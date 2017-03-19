@@ -1,7 +1,9 @@
-= New Year Game API
+= Game API
+:toc:
 
 The Game Server hosts a REST API. We will walk through a couple of scenarios that demonstrate how a client can use
 the API to play games. 
+
 
 
 == Add Players
@@ -27,3 +29,30 @@ include::{snippets}/add-player/4/http-response.adoc[]
 And the player is now available from the list:
 include::{snippets}/add-player/5/http-request.adoc[]
 include::{snippets}/add-player/5/http-response.adoc[]
+
+It depends on the game being played how many players are required/allowed. For instance, tic-tac-toe is played with
+two players. So adding a second player is fine:
+include::{snippets}/add-player/6/http-request.adoc[]
+include::{snippets}/add-player/6/http-response.adoc[]
+
+But adding a third will fail:
+include::{snippets}/add-player/7/http-request.adoc[]
+include::{snippets}/add-player/7/http-response.adoc[]
+
+
+== Start the game
+ 
+As soon as the minimum number of players are added to the game, it can be started. This is indicated by the
+presence of the `start` link relation:
+include::{snippets}/play-game/1/http-request.adoc[]
+include::{snippets}/play-game/1/http-response.adoc[]
+
+To start the game, issue a `POST` request to the corresponding URI:
+include::{snippets}/play-game/2/http-request.adoc[]
+include::{snippets}/play-game/2/http-response.adoc[]
+
+The response contains the current `level` of the game and a link to the current player via the
+`current-player` link relation. One of the added players is selected at random the have the first turn.
+
+To actually start playing the game, the current player can now select one of the moves accessible via the `moves` 
+link relation.

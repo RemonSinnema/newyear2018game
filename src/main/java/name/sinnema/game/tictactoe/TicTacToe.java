@@ -14,20 +14,13 @@ public class TicTacToe extends SingleMovePerTurnGame {
   }
 
   public TicTacToe() {
+    super(2, 2);
     super.add(new TicTacToeLevel());
   }
 
   @Override
-  public int add(Player player) {
-    if (getPlayers().size() >= 2) {
-      throw new UnsupportedOperationException();
-    }
-    return super.add(player);
-  }
-
-  @Override
   public void add(Level level) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("Cannot add levels to this game");
   }
 
 }
