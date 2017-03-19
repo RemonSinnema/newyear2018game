@@ -21,10 +21,12 @@ public class TurnbasedGame {
   /**
    * Add a player.
    * @param player The player to add
+   * @return
    */
-  public void add(Player player) {
+  public int add(Player player) {
     players.add(player);
     players.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+    return players.indexOf(player);
   }
 
   /**

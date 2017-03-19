@@ -1,9 +1,26 @@
 = New Year Game API
 
-The Game Server hosts a REST API. Start at the _billboard URL_ `/`:
-include::{snippets}/index/1/http-request.adoc[]
-include::{snippets}/index/1/http-response.adoc[]
+The Game Server hosts a REST API. We will walk through a couple of scenarios that demonstrate how a client can use
+the API to play games. 
 
-Follow the `games` link relation:
-include::{snippets}/index/2/http-request.adoc[]
-include::{snippets}/index/2/http-response.adoc[]
+
+== Add Players
+
+In order to be able to play a game, we need players. Let's add one now.
+
+Start at the _billboard URL_ `/`:
+include::{snippets}/add-player/1/http-request.adoc[]
+include::{snippets}/add-player/1/http-response.adoc[]
+
+Follow the `players` link relation to access the game's players:
+include::{snippets}/add-player/2/http-request.adoc[]
+include::{snippets}/add-player/2/http-response.adoc[]
+
+The list is initially empty. Issue a `POST` request to add a player:
+include::{snippets}/add-player/3/http-request.adoc[]
+include::{snippets}/add-player/3/http-response.adoc[]
+Note that a representation of the added player is returned, but also the `Location` header contains its URI.
+
+To verify that the player is indeed added, retry the `GET` request for the players:
+include::{snippets}/add-player/4/http-request.adoc[]
+include::{snippets}/add-player/4/http-response.adoc[]

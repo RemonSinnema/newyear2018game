@@ -18,7 +18,7 @@ public class IndexController {
   @ResponseBody
   public ResourceSupport index() {
     ResourceSupport index = new ResourceSupport();
-    index.add(linkTo(GamesController.class).withRel("games"));
+    index.add(linkTo(PlayersController.class).withRel(LinkRelations.PLAYERS));
     return index;
   }
 

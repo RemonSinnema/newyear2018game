@@ -1,5 +1,7 @@
 package name.sinnema.game.engine;
 
+import java.util.Objects;
+
 
 /**
  * Someone who actively participates in a game.
@@ -18,6 +20,20 @@ public class Player {
    */
   public String getName() {
     return name;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Player) {
+      Player other = (Player)obj;
+      return Objects.equals(name, other.name);
+    }
+    return false;
   }
 
   @Override
