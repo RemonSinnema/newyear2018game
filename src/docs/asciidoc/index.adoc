@@ -75,3 +75,10 @@ include::{snippets}/play-game/13/http-response.adoc[]
 
 This points us back to the game, where the client can find the new rendering of the world, the new current player, the
 new available moves, etc.
+
+After playing for a while, some player will eventually make a move that wins the level. The game will then advance to
+the next level, if available, or end when there are no more levels. In the latter case the game is over and some player
+will have won, as indicated by the `winning-player` link relation:
+include::{snippets}/play-game/29/http-request.adoc[]
+include::{snippets}/play-game/29/http-response.adoc[]
+Also note that there are no more moves to be made.

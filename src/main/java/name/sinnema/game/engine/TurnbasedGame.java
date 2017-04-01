@@ -141,7 +141,7 @@ public class TurnbasedGame {
    * @return The 1-based index of the current level
    */
   public int getCurrentLevel() {
-    return currentLevelIndex + 1; // Report 1-based level for human consumption
+    return isOver() ? currentLevelIndex : currentLevelIndex + 1; // Report 1-based level for human consumption
   }
 
   /**

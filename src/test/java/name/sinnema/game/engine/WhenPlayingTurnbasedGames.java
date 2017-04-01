@@ -183,6 +183,7 @@ public class WhenPlayingTurnbasedGames {
     assertTrue("After completing last level", game.isOver());
     assertSame("Winning player", game.getCurrentPlayer(), game.getWinningPlayer());
     assertEquals("Moves after game is over", Collections.emptyList(), game.getCurrentMoves());
+    assertEquals("Level after game is over", 1, game.getCurrentLevel());
 
     thrown.expect(UnsupportedOperationException.class);
     game.endTurn();

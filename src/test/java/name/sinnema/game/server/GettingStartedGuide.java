@@ -1,7 +1,9 @@
 package name.sinnema.game.server;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -87,8 +89,8 @@ public class GettingStartedGuide {
         .build();
   }
 
-  @Test
   @SuppressWarnings("unchecked")
+  @Test
   public void playGame() throws Exception {
     // Add players
     MvcResult state = getGame();
@@ -130,6 +132,27 @@ public class GettingStartedGuide {
     verify(worldRenderer).render(any(World.class), any(OutputStream.class));
 
     // Make move
+    makeMove(0);
+
+    // Win game
+    makeMove(0);
+    makeMove(0);
+    makeMove(1);
+    makeMove(0);
+    makeMove(2);
+    state = getGame();
+    assertEquals("Level", "1", getResponseField(state, "level", String.class));
+    Map<String, Map<String, String>> links = getResponseField(state, "_links", Map.class);
+    assertTrue("Missing world after game is over", links.containsKey(LinkRelations.WORLD));
+    assertFalse("Found moves after game is over", links.containsKey(LinkRelations.MOVES));
+    assertTrue("Missing players after game is over", links.containsKey(LinkRelations.PLAYERS));
+    assertFalse("Found current player after game is over", links.containsKey(LinkRelations.CURRENT_PLAYER));
+    assertTrue("Missing winning player after game is over", links.containsKey(LinkRelations.WINNING_PLAYER));
+  }
+
+  @SuppressWarnings("unchecked")
+  private void makeMove(int moveIndex) throws UnsupportedEncodingException, Exception {
+    MvcResult state;
     String movesUri = getLinkUri(getGame(), LinkRelations.MOVES);
     state = client.perform(
         get(movesUri))
@@ -137,8 +160,9 @@ public class GettingStartedGuide {
         .andReturn();
     List<Map<String, Object>> moves = getResponseField(state, "_embedded.moves", List.class);
     assertNotNull("Missing moves", moves);
+    assertTrue("Invalid move index", moveIndex < moves.size());
 
-    Map<String, Map<String, String>> links = (Map<String, Map<String, String>>)moves.get(0).get("_links");
+    Map<String, Map<String, String>> links = (Map<String, Map<String, String>>)moves.get(moveIndex).get("_links");
     assertNotNull("Missing move links in: " + moves, links);
     String moveUri = links.entrySet().stream()
         .filter(link -> "self".equals(link.getKey()))
