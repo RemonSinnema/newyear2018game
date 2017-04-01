@@ -2,6 +2,11 @@ package name.sinnema.game.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.relaxedLinks;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -13,7 +18,9 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -37,6 +44,8 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 
 import name.sinnema.game.engine.TurnbasedGame;
+import name.sinnema.game.engine.World;
+import name.sinnema.game.engine.WorldRenderer;
 import name.sinnema.game.tictactoe.TicTacToe;
 
 
@@ -51,6 +60,13 @@ public class GettingStartedGuide {
   private MockMvc client;
   private RestDocumentationResultHandler gettingStartedGuide;
   private final ObjectMapper mapper = new ObjectMapper();
+  @Autowired
+  private WorldRenderer worldRenderer;
+
+  @Bean
+  public WorldRenderer worldRenderer() {
+    return mock(WorldRenderer.class);
+  }
 
   @Bean
   public TurnbasedGame game() {
@@ -64,15 +80,17 @@ public class GettingStartedGuide {
         preprocessResponse(prettyPrint()));
     client = MockMvcBuilders.webAppContextSetup(context)
         .apply(documentationConfiguration(restDocumentation))
-        .defaultRequest(get("/").accept(MediaTypes.HAL_JSON))
+        .defaultRequest(get("/"))
         .alwaysDo(gettingStartedGuide)
         .build();
   }
 
   @Test
-  public void addPlayer() throws Exception {
-    String playersUri = getPlayersUri();
-    MvcResult state = client.perform(
+  public void playGame() throws Exception {
+    // Add players
+    MvcResult state = getGame();
+    String playersUri = getPlayersUri(state);
+    state = client.perform(
         get(playersUri))
         .andExpect(status().isOk())
         .andReturn();
@@ -88,10 +106,36 @@ public class GettingStartedGuide {
     addPlayer(playersUri, "yiri");
     tryAddPlayer(playersUri, "ray")
         .andExpect(status().isForbidden());
+
+    // Start game
+    String startUri = getLinkUri(getGame(), LinkRelations.START);
+    state = client.perform(post(startUri))
+        .andExpect(status().isOk())
+        .andReturn();
+    assertEquals("Level", 1, getResponseField(state, "level", Integer.class).intValue());
+    assertNotNull("Current player", getLinkUri(state, LinkRelations.CURRENT_PLAYER));
+    String worldUri = getLinkUri(state, LinkRelations.WORLD);
+    when(worldRenderer.getMediaType()).thenReturn("image/png");
+    doAnswer(invocation -> {
+      OutputStream output = invocation.getArgumentAt(1, OutputStream.class);
+      output.write("<Graphic representation of the world>".getBytes(StandardCharsets.UTF_8));
+      return null;
+    }).when(worldRenderer).render(any(World.class), any(OutputStream.class));
+    client.perform(
+        get(worldUri))
+        .andExpect(status().isOk());
+    verify(worldRenderer).render(any(World.class), any(OutputStream.class));
+
+    // Make move
+    String movesUri = getLinkUri(getGame(), LinkRelations.MOVES);
+    state = client.perform(
+        get(movesUri))
+        .andExpect(status().isOk())
+        .andReturn();
   }
 
-  private String getPlayersUri() throws Exception, UnsupportedEncodingException {
-    return getLinkUri(getGame(), LinkRelations.PLAYERS);
+  private String getPlayersUri(MvcResult state) throws Exception, UnsupportedEncodingException {
+    return getLinkUri(state, LinkRelations.PLAYERS);
   }
 
   private MvcResult getGame() throws Exception {
@@ -142,17 +186,6 @@ public class GettingStartedGuide {
 
   private String getCreatedUri(MvcResult state) {
     return state.getResponse().getHeader("Location");
-  }
-
-  @Test
-  public void playGame() throws Exception {
-    String startUri = getLinkUri(getGame(), LinkRelations.START);
-    MvcResult state = client.perform(post(startUri))
-        .andExpect(status().isOk())
-        .andReturn();
-    assertEquals("Level", 1, getResponseField(state, "level", Integer.class).intValue());
-    assertNotNull("Current player", getLinkUri(state, LinkRelations.CURRENT_PLAYER));
-    assertNotNull("Moves", getLinkUri(state, LinkRelations.MOVES));
   }
 
 }

@@ -58,6 +58,14 @@ public class GameController {
               .toUri()
               .toString(),
           LinkRelations.MOVES));
+      result.add(new Link(
+          MvcUriComponentsBuilder
+              .fromController(WorldController.class)
+              .build()
+              .encode()
+              .toUri()
+              .toString(),
+          LinkRelations.WORLD));
     }
     return result;
   }

@@ -11,48 +11,61 @@ the API to play games.
 In order to be able to play a game, we need players. Here's how to do that.
 
 Start at the _billboard URL_ `/`:
-include::{snippets}/add-player/1/http-request.adoc[]
-include::{snippets}/add-player/1/http-response.adoc[]
+include::{snippets}/play-game/1/http-request.adoc[]
+include::{snippets}/play-game/1/http-response.adoc[]
 
 Follow the `players` link relation to access the game's players:
-include::{snippets}/add-player/2/http-request.adoc[]
-include::{snippets}/add-player/2/http-response.adoc[]
+include::{snippets}/play-game/2/http-request.adoc[]
+include::{snippets}/play-game/2/http-response.adoc[]
 
 The list is initially empty. Issue a `POST` request to add a player:
-include::{snippets}/add-player/3/http-request.adoc[]
-include::{snippets}/add-player/3/http-response.adoc[]
+include::{snippets}/play-game/3/http-request.adoc[]
+include::{snippets}/play-game/3/http-response.adoc[]
 A representation of the newly added player is returned, and the `Location` header contains its URI. The same
 representation can be retrieved from a `GET` request to that URI:
-include::{snippets}/add-player/4/http-request.adoc[]
-include::{snippets}/add-player/4/http-response.adoc[]
+include::{snippets}/play-game/4/http-request.adoc[]
+include::{snippets}/play-game/4/http-response.adoc[]
 
 And the player is now available from the list:
-include::{snippets}/add-player/5/http-request.adoc[]
-include::{snippets}/add-player/5/http-response.adoc[]
+include::{snippets}/play-game/5/http-request.adoc[]
+include::{snippets}/play-game/5/http-response.adoc[]
 
 It depends on the game being played how many players are required/allowed. For instance, tic-tac-toe is played with
 two players. So adding a second player is fine:
-include::{snippets}/add-player/6/http-request.adoc[]
-include::{snippets}/add-player/6/http-response.adoc[]
+include::{snippets}/play-game/6/http-request.adoc[]
+include::{snippets}/play-game/6/http-response.adoc[]
 
 But adding a third will fail:
-include::{snippets}/add-player/7/http-request.adoc[]
-include::{snippets}/add-player/7/http-response.adoc[]
+include::{snippets}/play-game/7/http-request.adoc[]
+include::{snippets}/play-game/7/http-response.adoc[]
 
 
 == Start the game
  
 As soon as the minimum number of players are added to the game, it can be started. This is indicated by the
 presence of the `start` link relation:
-include::{snippets}/play-game/1/http-request.adoc[]
-include::{snippets}/play-game/1/http-response.adoc[]
+include::{snippets}/play-game/8/http-request.adoc[]
+include::{snippets}/play-game/8/http-response.adoc[]
 
 To start the game, issue a `POST` request to the corresponding URI:
-include::{snippets}/play-game/2/http-request.adoc[]
-include::{snippets}/play-game/2/http-response.adoc[]
+include::{snippets}/play-game/9/http-request.adoc[]
+include::{snippets}/play-game/9/http-response.adoc[]
 
 The response contains the current `level` of the game and a link to the current player via the
 `current-player` link relation. One of the added players is selected at random the have the first turn.
 
+The current world of the game is available via the `world` link relation:
+include::{snippets}/play-game/10/http-request.adoc[]
+include::{snippets}/play-game/10/http-response.adoc[]
+
+The actual content type of the response depends on how the game's world is rendered. The response could be HTML, an
+image, or anything else, really. Some games may even render the world as a structure in, say, HAL, leaving the client
+to do the rendering.
+
+
+== Make a move
+
 To actually start playing the game, the current player can now select one of the moves accessible via the `moves` 
 link relation.
+include::{snippets}/play-game/12/http-request.adoc[]
+include::{snippets}/play-game/12/http-response.adoc[]
