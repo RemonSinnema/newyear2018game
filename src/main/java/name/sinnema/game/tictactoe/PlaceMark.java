@@ -24,6 +24,11 @@ public class PlaceMark implements Move {
   }
 
   @Override
+  public String getDescription() {
+    return String.format("Place %s at %d", mark, index);
+  }
+
+  @Override
   public int hashCode() {
     return Objects.hash(index, mark);
   }
@@ -39,7 +44,7 @@ public class PlaceMark implements Move {
 
   @Override
   public String toString() {
-    return String.format("Place %s at %d", mark, index);
+    return getDescription();
   }
 
 }

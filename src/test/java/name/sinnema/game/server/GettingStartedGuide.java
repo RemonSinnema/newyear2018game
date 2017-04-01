@@ -20,7 +20,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -80,12 +83,12 @@ public class GettingStartedGuide {
         preprocessResponse(prettyPrint()));
     client = MockMvcBuilders.webAppContextSetup(context)
         .apply(documentationConfiguration(restDocumentation))
-        .defaultRequest(get("/"))
         .alwaysDo(gettingStartedGuide)
         .build();
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void playGame() throws Exception {
     // Add players
     MvcResult state = getGame();
@@ -95,7 +98,7 @@ public class GettingStartedGuide {
         .andExpect(status().isOk())
         .andReturn();
     state = addPlayer(playersUri, "armin");
-    String playerUri = getCreatedUri(state);
+    String playerUri = getLocation(state);
     state = client.perform(get(playerUri))
         .andExpect(status().isOk())
         .andReturn();
@@ -132,6 +135,22 @@ public class GettingStartedGuide {
         get(movesUri))
         .andExpect(status().isOk())
         .andReturn();
+    List<Map<String, Object>> moves = getResponseField(state, "_embedded.moves", List.class);
+    assertNotNull("Missing moves", moves);
+    System.err.println(moves);
+
+    Map<String, Map<String, String>> links = (Map<String, Map<String, String>>)moves.get(0).get("_links");
+    assertNotNull("Missing move links in: " + moves, links);
+    String moveUri = links.entrySet().stream()
+        .filter(link -> "self".equals(link.getKey()))
+        .map(link -> link.getValue().get("href"))
+        .findAny()
+        .orElseThrow(() -> new AssertionError("Missing move link"));
+    state = client.perform(
+        post(moveUri))
+        .andExpect(status().isSeeOther())
+        .andReturn();
+    assertEquals("Game URI", "/", URI.create(getLocation(state)).getPath());
   }
 
   private String getPlayersUri(MvcResult state) throws Exception, UnsupportedEncodingException {
@@ -172,7 +191,9 @@ public class GettingStartedGuide {
     try {
       return JsonPath.parse(json).read(jsonPath, type);
     } catch (PathNotFoundException e) {
-      throw new AssertionError("Failed to find path " + jsonPath + " in:\n" + json);
+      throw new AssertionError("Failed to find path " + jsonPath + " in:\n" + json, e);
+    } catch (Exception e) {
+      throw new AssertionError("Failed to convert " + jsonPath + " to " + type + ": " + json, e);
     }
   }
 
@@ -184,7 +205,7 @@ public class GettingStartedGuide {
     }
   }
 
-  private String getCreatedUri(MvcResult state) {
+  private String getLocation(MvcResult state) {
     return state.getResponse().getHeader("Location");
   }
 

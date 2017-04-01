@@ -65,7 +65,13 @@ to do the rendering.
 
 == Make a move
 
-To actually start playing the game, the current player can now select one of the moves accessible via the `moves` 
-link relation.
+To actually start playing the game, retrieve the possible moves via the `moves` link relation:
 include::{snippets}/play-game/12/http-request.adoc[]
 include::{snippets}/play-game/12/http-response.adoc[]
+
+The select a move and `POST` to its URI:
+include::{snippets}/play-game/13/http-request.adoc[]
+include::{snippets}/play-game/13/http-response.adoc[]
+
+This puts us back at the game, where the client can find the new rendering of the world, the available moves, etc.
+
