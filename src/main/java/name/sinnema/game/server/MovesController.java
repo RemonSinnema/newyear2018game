@@ -62,7 +62,7 @@ public class MovesController {
   }
 
   @RequestMapping(path = "/{index}", method = RequestMethod.POST)
-  public ResponseEntity<Object> makeMove(@PathVariable("index") int index) {
+  public ResponseEntity<Resource<String>> makeMove(@PathVariable("index") int index) {
     List<Move> moves = game.getCurrentMoves();
     if (0 > index || index >= moves.size()) {
       throw new ResourceNotFoundException();
@@ -75,7 +75,8 @@ public class MovesController {
         .encode()
         .toUri();
     headers.setLocation(gameUri);
-    return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
+    Resource<String> body = new Resource<>("", new Link(gameUri.toString(), LinkRelations.GAME));
+    return new ResponseEntity<>(body, headers, HttpStatus.FOUND);
   }
 
 }

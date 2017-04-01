@@ -137,7 +137,6 @@ public class GettingStartedGuide {
         .andReturn();
     List<Map<String, Object>> moves = getResponseField(state, "_embedded.moves", List.class);
     assertNotNull("Missing moves", moves);
-    System.err.println(moves);
 
     Map<String, Map<String, String>> links = (Map<String, Map<String, String>>)moves.get(0).get("_links");
     assertNotNull("Missing move links in: " + moves, links);
@@ -148,7 +147,7 @@ public class GettingStartedGuide {
         .orElseThrow(() -> new AssertionError("Missing move link"));
     state = client.perform(
         post(moveUri))
-        .andExpect(status().isSeeOther())
+        .andExpect(status().isFound())
         .andReturn();
     assertEquals("Game URI", "/", URI.create(getLocation(state)).getPath());
   }

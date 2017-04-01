@@ -69,9 +69,9 @@ To actually start playing the game, retrieve the possible moves via the `moves` 
 include::{snippets}/play-game/12/http-request.adoc[]
 include::{snippets}/play-game/12/http-response.adoc[]
 
-The select a move and `POST` to its URI:
+Then select a move from the list and `POST` to its URI:
 include::{snippets}/play-game/13/http-request.adoc[]
 include::{snippets}/play-game/13/http-response.adoc[]
 
-This puts us back at the game, where the client can find the new rendering of the world, the available moves, etc.
-
+This points us back to the game, where the client can find the new rendering of the world, the new current player, the
+new available moves, etc.

@@ -8,5 +8,6 @@ public interface LinkRelations {
   String START = "start";
   String WORLD = "world";
   String MOVES = "moves";
+  String GAME = "game";
 
 }
