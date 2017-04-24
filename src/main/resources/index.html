@@ -1,65 +1,115 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-	  <style type="text/css">
-	    table {
-	      border-collapse: collapse;
-	    }
-	    tr { 
-	     height: 2em;
+  <head>
+    <style type="text/css">
+      table {
+      	border-collapse: collapse;
       }
-	    td { 
-	      border: solid black 1px;
-	      width: 2em;
-	      text-align: center;
-	      vertical-align: middle;
-	    }
-	    .empty:after {
-	      content: "";
-	    }
+      tr {
+      	height: 2em;
+      }
+      td {
+      	border: solid black 1px;
+      	width: 2em;
+      	text-align: center;
+      	vertical-align: middle;
+      }
+      .empty:after {
+      	content: "";
+      }
       .cross:after {
-        content: "X";
+      	content: "X";
       }
       .nought:after {
-        content: "O";
+      	content: "O";
       }
-	  </style>
-	  <script type="text/javascript">
-	    function setup() {
-	    	document.getElementById("setup").style.visibility = "hidden";
-        document.getElementById("board").style.visibility = "visible";
-	    }
-	  </script>
-	</head>
-	<body>
-	  <div id="setup">
-      <label for="player1">Player #1</label><input id="player1"/><br/>
-      <label for="player2">Player #2</label><input id="player2"/><br/>
-      <input id="start" type="submit" value="Start" onclick="setup()"/>
-	  </div>
-	  <div id="board" style="visibility: hidden;">
-	    <table>
-	      <tr>
-	        <td id="cell_1_1" class="empty"/>
-          <td id="cell_1_2" class="empty"/>
-          <td id="cell_1_3" class="empty"/>
-	      </tr>
+    </style>
+    <script type="text/javascript">
+    	var client = new XMLHttpRequest();
+    	client.onerror = function(e) {
+    		console.log("Error: " + e.error);
+    	}
+    
+    	function withPlayersUri(use) {
+        client.onload = function() {
+          var game = JSON.parse(this.response);
+          var uri = game._links.players.href;
+          use(uri);
+        };
+        client.open("GET", "/")
+        client.send();
+    	}
+    	
+    	function logResponse() {
+    	  console.log(this.response)	
+    	}
+    	
+    	function addPlayer(uri, id, done) {
+    		client.onload = done;
+    		client.open("POST", uri);
+    		client.setRequestHeader("Content-Type", "application/hal+json");
+    		client.send(JSON.stringify({ "name": document.getElementById(id).value }));
+    	}
+    		
+      function addPlayers(done) {
+    	  withPlayersUri(function(uri) {
+      	  addPlayer(uri, "player1", function() {
+      		  addPlayer(uri, "player2", done);
+      	  });
+    	  });
+      }
+    	
+      function start() {
+        var game = JSON.parse(this.response);
+        var uri = game._links.start.href;
+        client.onload = function() {
+          document.getElementById("setup").style.visibility = "hidden";
+          document.getElementById("board").style.visibility = "visible";
+        };
+        client.open("POST", uri);
+        client.send();
+      }
+    	  
+    	function setup() {
+    		addPlayers(function() {
+      		client.onload = start;
+      		client.open("GET", "/")
+      		client.send();
+    		});
+    	}
+    </script>
+  </head>
+  <body>
+    <div id="setup">
+      <label for="player1">Player #1</label><input id="player1"/><br />
+      <label for="player2">Player #2</label><input id="player2" /><br />
+      <input id="start" type="submit" value="Start" onclick="setup()" />
+    </div>
+    <div id="board" style="visibility: hidden;">
+      <table>
         <tr>
-          <td id="cell_2_1" class="empty"/>
-          <td id="cell_2_2" class="empty"/>
-          <td id="cell_2_3" class="empty"/>
+          <td id="cell_1_1" class="empty" />
+          <td id="cell_1_2" class="empty" />
+          <td id="cell_1_3" class="empty" />
         </tr>
         <tr>
-          <td id="cell_3_1" class="empty"/>
-          <td id="cell_3_2" class="empty"/>
-          <td id="cell_3_3" class="empty"/>
+          <td id="cell_2_1" class="empty" />
+          <td id="cell_2_2" class="empty" />
+          <td id="cell_2_3" class="empty" />
         </tr>
-	    </table>
-	  </div>
-	  <div id="end" style="visibility: hidden;">
-	    <h1>Game Over</h1>
-	    <p>The winner is <span id="winner"/></p>
-	  </div>
-	</body>
+        <tr>
+          <td id="cell_3_1" class="empty" />
+          <td id="cell_3_2" class="empty" />
+          <td id="cell_3_3" class="empty" />
+        </tr>
+      </table>
+    </div>
+    <div id="end" style="visibility: hidden;">
+      <h1>Game Over</h1>
+      <p>
+        The winner is <span id="winner" />
+      </p>
+    </div>
+  </body>
 </html>
