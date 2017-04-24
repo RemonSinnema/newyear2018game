@@ -1,10 +1,8 @@
 package name.sinnema.game.engine;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import org.atteo.evo.inflector.English;
 
@@ -14,7 +12,6 @@ import org.atteo.evo.inflector.English;
  */
 public class TurnbasedGame {
 
-  private final Random random = new SecureRandom();
   private final List<Player> players = new ArrayList<>();
   private final List<Level> levels = new ArrayList<>();
   private final int minPlayers;
@@ -77,7 +74,7 @@ public class TurnbasedGame {
     if (!canStart()) {
       throw new IllegalStateException("Cannot start game");
     }
-    currentPlayerIndex = random.nextInt(players.size());
+    currentPlayerIndex = 0;
     currentLevelIndex = 0;
   }
 

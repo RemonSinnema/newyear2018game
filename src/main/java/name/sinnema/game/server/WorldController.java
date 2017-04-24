@@ -10,8 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import name.sinnema.game.engine.Renderer;
 import name.sinnema.game.engine.TurnbasedGame;
-import name.sinnema.game.engine.WorldRenderer;
+import name.sinnema.game.engine.World;
 
 
 @Controller
@@ -21,7 +22,7 @@ public class WorldController {
   @Autowired
   private TurnbasedGame game;
   @Autowired
-  private WorldRenderer renderer;
+  private Renderer<World> renderer;
 
   @RequestMapping(method = RequestMethod.GET)
   public void getWorld(HttpServletResponse response) {

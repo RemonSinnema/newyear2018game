@@ -1,13 +1,19 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+
 buildscript {
-	ext {
-		springBootVersion = '1.4.4.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+  ext {
+    springBootVersion = '1.4.4.RELEASE'
+    serenityVersion = '1.2.4'
+  }
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    classpath "net.serenity-bdd:serenity-gradle-plugin:$serenityVersion"
+  }
 }
 
 plugins {
@@ -17,48 +23,73 @@ plugins {
   id 'org.asciidoctor.convert' version '1.5.2'
 }
 
+apply plugin: 'net.serenity-bdd.aggregator'
+test.finalizedBy aggregate, checkOutcomes
+
+task deleteTarget(type: Delete ) { delete file('target') }
+clean.dependsOn deleteTarget
+
+
 repositories {
-	mavenCentral()
+  mavenCentral()
+  jcenter()
 }
 
 dependencies {
-	compile 'org.springframework.boot:spring-boot-starter-data-jpa',
-	   'org.springframework.boot:spring-boot-starter-mobile',
-     'org.springframework.boot:spring-boot-starter-web',
-     'org.springframework.boot:spring-boot-starter-hateoas',
-     'org.atteo:evo-inflector:1.2.2'
-	runtime 'com.h2database:h2'
-	testCompile 'org.springframework.boot:spring-boot-starter-test', 
-	   'org.springframework.restdocs:spring-restdocs-mockmvc:1.1.2.RELEASE'
+  compile 'org.springframework.boot:spring-boot-starter-data-jpa',
+      'org.springframework.boot:spring-boot-starter-mobile',
+      'org.springframework.boot:spring-boot-starter-web',
+      'org.springframework.boot:spring-boot-starter-hateoas',
+      'org.atteo:evo-inflector:1.2.2',
+      'commons-io:commons-io:2.5'
+  runtime 'com.h2database:h2'
+  testCompile 'org.springframework.boot:spring-boot-starter-test',
+      'org.springframework.restdocs:spring-restdocs-mockmvc:1.1.2.RELEASE',
+      "net.serenity-bdd:serenity-junit:$serenityVersion",
+      "net.serenity-bdd:serenity-screenplay:$serenityVersion",
+      "net.serenity-bdd:serenity-screenplay-webdriver:$serenityVersion"
 }
 
 
 sourceCompatibility = 1.8
 
 jar {
-	baseName = 'nye18'
-	version = '0.1'
+  baseName = 'nye18'
+  version = '0.1'
 }
 
-task wrapper(type: Wrapper) {
-  gradleVersion = '3.4.1'
-}
+task wrapper(type: Wrapper) { gradleVersion = '3.5' }
 
 defaultTasks 'build'
 
 
 ext { 
   snippetsDir = file('build/apis-docs-fragments')
+  binariesDir = file('src/install')
+  phantomVersion = '2.1.1-' + (Os.isFamily(Os.FAMILY_WINDOWS) ? 'windows' :  Os.isFamily(Os.FAMILY_MAC) ? 'macosx' :
+      'linux-x86_64')
+  phantomInstallFile = new File(binariesDir,'phantom/phantomjs-' + phantomVersion + '.zip')
+  phantomInstallDir = new File(project.buildDir, 'phantom')
+  phantomBinary = new File(phantomInstallDir, 'bin/phantomjs' + (Os.isFamily(Os.FAMILY_WINDOWS) ? '.exe' : ''))
+  screenshotsDir = new File(project.buildDir, 'screenshots')
+}
+
+task installPhantom(type: Copy) {
+  group 'any cluster'
+  from zipTree(phantomInstallFile)
+  into phantomInstallDir
 }
 
 test { 
+  dependsOn installPhantom
   outputs.dir snippetsDir
+  systemProperty 'phantomjs.binary.path', phantomBinary.path
 }
 
-asciidoctor { 
-  attributes 'snippets': snippetsDir 
-  inputs.dir snippetsDir 
-  dependsOn test 
+asciidoctor {
+  attributes 'snippets': snippetsDir
+  inputs.dir snippetsDir
+  dependsOn test
 }
 
 build.dependsOn asciidoctor

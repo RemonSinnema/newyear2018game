@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,12 +49,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 
+import name.sinnema.game.engine.Renderer;
 import name.sinnema.game.engine.TurnbasedGame;
 import name.sinnema.game.engine.World;
-import name.sinnema.game.engine.WorldRenderer;
 import name.sinnema.game.tictactoe.TicTacToe;
 
 
+@Ignore("Disabled for now because it's slow")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = { GameApplication.class, GettingStartedGuide.class })
 public class GettingStartedGuide {
@@ -66,11 +68,12 @@ public class GettingStartedGuide {
   private RestDocumentationResultHandler gettingStartedGuide;
   private final ObjectMapper mapper = new ObjectMapper();
   @Autowired
-  private WorldRenderer worldRenderer;
+  private Renderer<World> worldRenderer;
 
   @Bean
-  public WorldRenderer worldRenderer() {
-    return mock(WorldRenderer.class);
+  @SuppressWarnings("unchecked")
+  public Renderer<World> worldRenderer() {
+    return mock(Renderer.class);
   }
 
   @Bean

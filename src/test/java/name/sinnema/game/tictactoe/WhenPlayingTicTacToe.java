@@ -20,6 +20,11 @@ import name.sinnema.game.engine.Move;
 import name.sinnema.game.engine.Player;
 import name.sinnema.game.engine.TurnbasedGame;
 import name.sinnema.game.engine.World;
+import name.sinnema.game.tictactoe.Mark;
+import name.sinnema.game.tictactoe.PlaceMark;
+import name.sinnema.game.tictactoe.TicTacToe;
+import name.sinnema.game.tictactoe.TicTacToeLevel;
+import name.sinnema.game.tictactoe.TicTacToeWorld;
 
 
 public class WhenPlayingTicTacToe {
