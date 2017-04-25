@@ -1,6 +1,7 @@
 package name.sinnema.game.server;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,8 @@ import name.sinnema.game.engine.Move;
 @Service
 public class MoveDtoFactory {
 
-  @Autowired
-  private Collection<MoveDtoCreator> creators;
+  @Autowired(required = false)
+  private final Collection<MoveDtoCreator> creators = Collections.emptyList();
 
   public MoveDto newInstanceFor(Move move) {
     return creators.stream()

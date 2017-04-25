@@ -3,7 +3,6 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
   ext {
-    springBootVersion = '1.4.4.RELEASE'
     serenityVersion = '1.2.4'
   }
   repositories {
@@ -11,7 +10,6 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     classpath "net.serenity-bdd:serenity-gradle-plugin:$serenityVersion"
   }
 }
@@ -19,7 +17,6 @@ buildscript {
 plugins {
   id 'java'
   id 'eclipse'
-  id 'org.springframework.boot' version '1.5.2.RELEASE'
   id 'org.asciidoctor.convert' version '1.5.2'
 }
 
@@ -36,14 +33,14 @@ repositories {
 }
 
 dependencies {
-  compile 'org.springframework.boot:spring-boot-starter-data-jpa',
-      'org.springframework.boot:spring-boot-starter-mobile',
-      'org.springframework.boot:spring-boot-starter-web',
-      'org.springframework.boot:spring-boot-starter-hateoas',
+  compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion",
+      "org.springframework.boot:spring-boot-starter-mobile:$springBootVersion",
+      "org.springframework.boot:spring-boot-starter-web:$springBootVersion",
+      "org.springframework.boot:spring-boot-starter-hateoas:$springBootVersion",
       'org.atteo:evo-inflector:1.2.2',
       'commons-io:commons-io:2.5'
-  runtime 'com.h2database:h2'
-  testCompile 'org.springframework.boot:spring-boot-starter-test',
+  runtime 'com.h2database:h2:1.4.195'
+  testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion",
       'org.springframework.restdocs:spring-restdocs-mockmvc:1.1.2.RELEASE',
       "net.serenity-bdd:serenity-junit:$serenityVersion",
       "net.serenity-bdd:serenity-screenplay:$serenityVersion",

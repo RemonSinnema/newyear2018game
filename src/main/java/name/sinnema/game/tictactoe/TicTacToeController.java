@@ -21,7 +21,7 @@ public class TicTacToeController {
   public void getWorld(HttpServletResponse response) {
     response.setContentType(MediaType.APPLICATION_XHTML_XML_VALUE);
     try {
-      try (InputStream input = getClass().getResourceAsStream("/index.html")) {
+      try (InputStream input = getClass().getResourceAsStream("/tictactoe/index.html")) {
         IOUtils.copy(input, response.getOutputStream());
       }
     } catch (IOException e) {

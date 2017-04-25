@@ -42,8 +42,7 @@ class TicTacToeLevel implements Level {
 
   @Override
   public boolean isComplete() {
-    return !world.emptyCellIndexes().findAny().isPresent()
-        || world.hasRowWhereAllCellsAreMarkedTheSame();
+    return world.hasRowWhereAllCellsAreMarkedTheSame();
   }
 
 }

@@ -75,7 +75,9 @@ public class WhenPlayingTurnbasedGames {
 
   @Test
   public void shouldLetEachPlayerPlayInTurn() {
-    game.add(mock(Level.class));
+    Level level = mock(Level.class);
+    when(level.getMovesFor(any(Player.class))).thenReturn(Collections.singletonList(mock(Move.class)));
+    game.add(level);
     Player player1 = new Player("yiri");
     Player player2 = new Player("armin");
     game.add(player1);
@@ -172,7 +174,8 @@ public class WhenPlayingTurnbasedGames {
   public void shouldEndGameWhenLastLevelIsComplete() {
     Level level = mock(Level.class);
     game.add(level);
-    game.add(new Player("armin"));
+    Player player1 = new Player("armin");
+    game.add(player1);
     game.add(new Player("yiri"));
     game.start();
 
@@ -181,7 +184,7 @@ public class WhenPlayingTurnbasedGames {
     when(level.isComplete()).thenReturn(true);
     game.endTurn();
     assertTrue("After completing last level", game.isOver());
-    assertSame("Winning player", game.getCurrentPlayer(), game.getWinningPlayer());
+    assertSame("Winning player", player1, game.getWinningPlayer());
     assertEquals("Moves after game is over", Collections.emptyList(), game.getCurrentMoves());
     assertEquals("Level after game is over", 1, game.getCurrentLevel());
 

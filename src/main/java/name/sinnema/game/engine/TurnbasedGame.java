@@ -18,6 +18,7 @@ public class TurnbasedGame {
   private final int maxPlayers;
   private int currentPlayerIndex;
   private int currentLevelIndex = -1;
+  private Player winningPlayer;
 
   public TurnbasedGame() {
     this(1, Integer.MAX_VALUE);
@@ -105,7 +106,7 @@ public class TurnbasedGame {
    * @return The player who's turn it is to make a move
    */
   public Player getCurrentPlayer() {
-    return players.get(currentPlayerIndex);
+    return isOver() ? null : players.get(currentPlayerIndex);
   }
 
   /**
@@ -117,8 +118,12 @@ public class TurnbasedGame {
     }
     if (currentLevel().isComplete()) {
       currentLevelIndex++;
+      winningPlayer = getPlayers().get(currentPlayerIndex);
+    } else if (getCurrentMoves().isEmpty()) {
+      currentLevelIndex++;
+    } else {
+      currentPlayerIndex = ++currentPlayerIndex % players.size();
     }
-    currentPlayerIndex = ++currentPlayerIndex % players.size();
   }
 
   private Level currentLevel() {
@@ -169,7 +174,7 @@ public class TurnbasedGame {
   }
 
   public Player getWinningPlayer() {
-    return isOver() ? getCurrentPlayer() : null;
+    return winningPlayer;
   }
 
 }

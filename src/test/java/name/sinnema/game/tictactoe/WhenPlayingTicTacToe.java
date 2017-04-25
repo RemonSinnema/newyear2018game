@@ -3,6 +3,8 @@ package name.sinnema.game.tictactoe;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -20,11 +22,6 @@ import name.sinnema.game.engine.Move;
 import name.sinnema.game.engine.Player;
 import name.sinnema.game.engine.TurnbasedGame;
 import name.sinnema.game.engine.World;
-import name.sinnema.game.tictactoe.Mark;
-import name.sinnema.game.tictactoe.PlaceMark;
-import name.sinnema.game.tictactoe.TicTacToe;
-import name.sinnema.game.tictactoe.TicTacToeLevel;
-import name.sinnema.game.tictactoe.TicTacToeWorld;
 
 
 public class WhenPlayingTicTacToe {
@@ -118,16 +115,19 @@ public class WhenPlayingTicTacToe {
   }
 
   @Test
-  public void shouldEndGameWhenPlayerMarksLine() {
+  public void shouldWinGameWhenPlayerMarksLine() {
     game.start();
 
+    executeMove(0);
+    executeMove(0);
+    executeMove(2);
+    executeMove(2);
     executeMove(4);
-    executeMove(0);
-    executeMove(0);
-    executeMove(0);
-    executeMove(3);
 
     assertTrue("Game should be over", game.isOver());
+    assertTrue("There should be no more moves", game.getCurrentMoves().isEmpty());
+    assertNull("Current player", game.getCurrentPlayer());
+    assertSame("Winning player", game.getPlayers().get(0), game.getWinningPlayer());
   }
 
   private void executeMove(int moveIndex) {
@@ -135,7 +135,7 @@ public class WhenPlayingTicTacToe {
   }
 
   @Test
-  public void shouldEndGameWhenNoMoreMoves() {
+  public void shouldEndInDrawWhenNoMoreMoves() {
     game.start();
 
     executeMove(4);
@@ -150,6 +150,8 @@ public class WhenPlayingTicTacToe {
 
     assertTrue("There should be no more moves", game.getCurrentMoves().isEmpty());
     assertTrue("Game should be over", game.isOver());
+    assertNull("Current player", game.getCurrentPlayer());
+    assertNull("Winning player", game.getWinningPlayer());
   }
 
 }

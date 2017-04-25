@@ -15,7 +15,7 @@ public class SetPlayer implements Interaction {
   private final int index;
 
   @Override
-  @Step("{0} sets player #index to #name")
+  @Step("{0} sets player #index to '#name'")
   public <T extends Actor> void performAs(T actor) {
     actor.attemptsTo(Enter.theValue(name).into(TheSetupPage.playerField(index)));
   }
