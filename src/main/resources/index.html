@@ -15,9 +15,6 @@
       	text-align: center;
       	vertical-align: middle;
       }
-      .empty:after {
-      	content: "";
-      }
       .cross:after {
       	content: "X";
       }
@@ -28,9 +25,91 @@
     <script type="text/javascript">
     	var client = new XMLHttpRequest();
     	client.onerror = function(e) {
-    		console.log("Error: " + e.error);
+    		alert("Error: " + e.error);
+    	};
+    	var movesUri;
+
+    	function setStyle(element, visibility, display) {
+    		element.style.visibility = visibility;
+        element.style.display = display;
     	}
-    
+    		
+    	function show(id) {
+    		setStyle(document.getElementById(id), "visible", "block");
+    	}
+    		
+      function hide(id) {
+        setStyle(document.getElementById(id), "hidden", "none");
+      }
+            
+      function setPlayerName(id, name) {
+        document.getElementById(id).textContent = name;
+      }
+    	  
+    	function setPlayer(id, playerUri, done) {
+        client.onload = function() {
+          var player = JSON.parse(this.response);
+          setPlayerName(id, player.name);
+          done();
+        };
+        client.open("GET", playerUri);
+        client.send();
+    	}
+    		
+    	function showWinner() {
+        hide("turn");
+        show("won");
+    	}
+
+    	function play(move) {
+    		return function(e) {
+    			e = e || window.event;
+    		  cell = e.target || e.srcElement;
+          cell.onclick = null;
+          cell.title = "";
+          cell.style.cursor = "auto";
+          cell.className = move.mark == "X" ? "cross" : "nought";
+          client.onload = updateBoard;
+          client.open("POST", move._links.self.href);
+          client.send();
+        };
+    	}
+    		
+    	function showMoves() {
+        client.onload = function() {
+        	var moves = JSON.parse(this.response)._embedded.placeMarkDtoes;
+        	for (var i = 0; i &lt; moves.length; i++) {
+        		var move = moves[i];
+        		var row = 1 + Math.floor(move.index / 3);
+        		var col = 1 + move.index % 3;
+        		var id = "cell_" + row + "_" + col;
+        		var cell = document.getElementById(id);
+        		cell.title = "Place " + move.mark;
+        		cell.style.cursor = "crosshair";
+        		cell.onclick = play(move);
+        	}
+        };
+        client.open("GET", movesUri);
+        client.send();
+    	}
+    		
+    	function updateBoard() {
+        client.onload = function() {
+          var game = JSON.parse(this.response);
+          if (game._links.moves) {
+        	  movesUri = game._links.moves.href;
+        	  setPlayer("current", game._links["current-player"].href, showMoves);
+          } else if (game._links["winning-player"]) {
+            setPlayer("winner", game._links["winning-player"].href, showWinner);
+          } else {
+            hide("turn");
+        	  show("draw");
+          }
+        };
+        client.open("GET", "/")
+        client.send();
+    	}
+    		
     	function withPlayersUri(use) {
         client.onload = function() {
           var game = JSON.parse(this.response);
@@ -42,7 +121,7 @@
     	}
     	
     	function logResponse() {
-    	  console.log(this.response)	
+    	  console.log(this.response);
     	}
     	
     	function addPlayer(uri, id, done) {
@@ -64,8 +143,9 @@
         var game = JSON.parse(this.response);
         var uri = game._links.start.href;
         client.onload = function() {
-          document.getElementById("setup").style.visibility = "hidden";
-          document.getElementById("board").style.visibility = "visible";
+          hide("setup");
+          show("board");
+          updateBoard();
         };
         client.open("POST", uri);
         client.send();
@@ -81,12 +161,17 @@
     </script>
   </head>
   <body>
+    <h1>Tic-Tac-Toe</h1>
     <div id="setup">
-      <label for="player1">Player #1</label><input id="player1"/><br />
-      <label for="player2">Player #2</label><input id="player2" /><br />
+      <p>Who are playing?</p>
+      <label for="player1">Player #1</label>&nbsp;<input id="player1"/><br />
+      <label for="player2">Player #2</label>&nbsp;<input id="player2" /><br />
       <input id="start" type="submit" value="Start" onclick="setup()" />
     </div>
     <div id="board" style="visibility: hidden;">
+      <div id="turn">
+        It's <span id="current" />'s turn. Click a cell to place your mark.<br />
+      </div>
       <table>
         <tr>
           <td id="cell_1_1" class="empty" />
@@ -105,10 +190,16 @@
         </tr>
       </table>
     </div>
-    <div id="end" style="visibility: hidden;">
-      <h1>Game Over</h1>
+    <div id="won" style="visibility: hidden;">
+      <h2>Game Over</h2>
       <p>
-        The winner is <span id="winner" />
+        <span id="winner" /> has won.
+      </p>
+    </div>
+    <div id="draw" style="visibility: hidden;">
+      <h2>Game Over</h2>
+      <p>
+        It's a draw.
       </p>
     </div>
   </body>

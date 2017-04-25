@@ -31,6 +31,8 @@ public class MovesController {
 
   @Autowired
   private TurnbasedGame game;
+  @Autowired
+  private MoveDtoFactory moveFactory;
 
   @RequestMapping(method = RequestMethod.GET)
   public Resources<Resource<MoveDto>> getMoves() {
@@ -48,7 +50,7 @@ public class MovesController {
   }
 
   private MoveDto moveToDto(Move move) {
-    MoveDto result = new MoveDto();
+    MoveDto result = moveFactory.newInstanceFor(move);
     result.setDescription(move.getDescription());
     return result;
   }

@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +54,6 @@ import name.sinnema.game.engine.World;
 import name.sinnema.game.tictactoe.TicTacToe;
 
 
-@Ignore("Disabled for now because it's slow")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = { GameApplication.class, GettingStartedGuide.class })
 public class GettingStartedGuide {
