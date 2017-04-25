@@ -120,10 +120,6 @@
         client.send();
     	}
     	
-    	function logResponse() {
-    	  console.log(this.response);
-    	}
-    	
     	function addPlayer(uri, id, done) {
     		client.onload = done;
     		client.open("POST", uri);
@@ -163,7 +159,7 @@
   <body>
     <h1>Tic-Tac-Toe</h1>
     <div id="setup">
-      <p>Who are playing?</p>
+      <h2>Who are playing?</h2>
       <label for="player1">Player #1</label>&nbsp;<input id="player1"/><br />
       <label for="player2">Player #2</label>&nbsp;<input id="player2" /><br />
       <input id="start" type="submit" value="Start" onclick="setup()" />
