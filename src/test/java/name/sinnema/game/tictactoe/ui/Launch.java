@@ -13,11 +13,12 @@ import net.serenitybdd.screenplay.Performable;
 import net.thucydides.core.annotations.Step;
 
 
-public class Server {
+public class Launch {
 
-  public static final String URL = "http://localhost:8080/tictactoe";
+  public static final String BASE_URL = "http://localhost:8080/";
+  public static final String URL = BASE_URL + "tictactoe";
 
-  public static Performable start() {
+  public static Performable theServer() {
     return instrumented(StartServer.class);
   }
 
@@ -25,7 +26,7 @@ public class Server {
   public static class StartServer implements Interaction {
 
     @Override
-    @Step("Start server")
+    @Step("Start game server")
     public <T extends Actor> void performAs(T actor) {
       Thread serverThread = new Thread(() -> TicTacToeApplication.main(new String[] { }));
       serverThread.setDaemon(true);

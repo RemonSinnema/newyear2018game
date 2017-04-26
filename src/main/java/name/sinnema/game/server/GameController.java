@@ -33,7 +33,9 @@ public class GameController {
       addStartLink(result);
     } else if (game.isOver()) {
       gameDto.setLevel(game.getCurrentLevel());
-      addPlayerLink(game.getWinningPlayer(), LinkRelations.WINNING_PLAYER, result);
+      if (game.getWinningPlayer() != null) {
+        addPlayerLink(game.getWinningPlayer(), LinkRelations.WINNING_PLAYER, result);
+      }
       addWorldLink(result);
     } else if (game.isStarted()) {
       gameDto.setLevel(game.getCurrentLevel());

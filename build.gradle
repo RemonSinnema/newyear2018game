@@ -37,6 +37,7 @@ dependencies {
       "org.springframework.boot:spring-boot-starter-mobile:$springBootVersion",
       "org.springframework.boot:spring-boot-starter-web:$springBootVersion",
       "org.springframework.boot:spring-boot-starter-hateoas:$springBootVersion",
+      "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion",
       'org.atteo:evo-inflector:1.2.2',
       'commons-io:commons-io:2.5'
   runtime 'com.h2database:h2:1.4.195'
